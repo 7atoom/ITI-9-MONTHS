@@ -1,0 +1,136 @@
+// 1
+db.people.find({
+  $or: [
+    { age: 40 },
+    { company: "Aivee" }
+  ]
+})
+
+// 2
+db.people.find({
+  age: { $gte: 25, $lte: 38 }
+}).limit(5)
+
+// 3
+db.people.find({
+    salray: { $gt: 20000 },
+}).sort({age: 1}).limit(1);
+
+// 4
+db.people.find({
+    country: "Russia"
+}).sort({age: -1}).skip(2).limit(1);
+
+// 5
+db.people.distinct("country").length;
+
+// 6
+db.people.aggregate([
+  {
+    $group: {
+      _id: null,
+      totalSalary: { $sum: "$salary" }
+    }
+  }
+])
+
+// 7
+db.people.aggregate([
+    {$sort : {salary: -1}},
+    { $limit: 3 },
+    {
+        $group: {
+            _id: null,
+            totalSalary: { $sum: "$salary" },
+        }
+    }
+]);
+
+// 8
+db.people.aggregate([
+  {
+    $group: {
+      _id: "$company",
+      avgSalary: { $avg: "$salary" }
+    }
+  },
+  { $sort: { avgSalary: -1 } }
+])
+
+// 9
+db.people.aggregate([
+  { $match: { country: "Germany" } },
+  {
+    $project: {
+      _id: 0,
+      fullName: { $concat: ["$first_name", " ", "$last_name"] }
+    }
+  }
+])
+
+// 10
+db.people.aggregate([
+  {
+    $group: {
+        _id: "$age",
+        count: { $sum: 1 }
+    }
+  },
+  { $sort: { _id: 1 } },
+])
+
+// 11
+db.people.find(
+  { age: { $lt: 30 } },
+  { email: 1, _id: 0 }
+);
+
+// 12
+
+db.people.aggregate([
+  {
+    $project: {
+      _id: 0,
+      fullName: { $concat: ["$first_name", " ", "$last_name"] },
+      age: 1,
+      country: 1,
+      salary: { $multiply: ["$salary", 3] }
+    }
+  },
+  { $out: "people_enhanced" }
+]);
+
+// 13
+db.people.getIndexes();
+
+// 14
+db.people.find({ 
+    email: { $regex: /@example\.com$/ }
+}).explain("executionStats");
+
+// 15
+db.people.createIndex({ email: 1 }, { unique: true })
+
+// 16
+db.people.createIndex({ email: 1, age: 1 })
+
+// 17
+
+
+// 18
+db.people.dropIndexes();
+
+// 19
+db.people.aggregate([
+    {
+        $group: {
+            _id: { country: "$country", city: "$city" }
+        }
+    },
+    {
+        $group: {
+            _id: "$_id.country",
+            cityCount: { $sum: 1 }
+        }
+    }
+])
