@@ -1,0 +1,17 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+.services {
+  padding: $space-12 0 $space-12;
+
+  @include respond(md) {
+    padding: $space-12 0 $space-12;
+  }
+}
+
+.services__grid {
+  display: grid;
+  gap: $space-6;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+

@@ -1,0 +1,74 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+.services {
+  text-align: center;
+  background: $color-bg;
+
+  &__header {
+    margin-bottom: $space-10;
+    display: grid;
+    gap: $space-4;
+    justify-items: center;
+  }
+
+  &__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    padding: 4px $space-3;
+    border-radius: $radius-pill;
+    background: $color-accent-soft;
+    color: $color-accent;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &__title {
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    letter-spacing: -0.01em;
+  }
+
+  &__subtitle {
+    max-width: 640px;
+    color: $color-subtle;
+    font-size: 1rem;
+  }
+}
+
+.service-card {
+  @include card-surface;
+  padding: $space-6;
+  text-align: left;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+
+  &:hover,
+  &:focus-within {
+    transform: translateY(-4px);
+    border-color: rgba($color-accent, 0.4);
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.08);
+  }
+
+  &__icon {
+    @include flex-center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: $space-4;
+    border-radius: $radius-pill;
+    background: $color-accent-soft;
+    color: $color-accent;
+    font-size: 1.4rem;
+  }
+
+  &__title {
+    font-size: 1.1rem;
+    margin-bottom: $space-3;
+  }
+
+  &__copy {
+    font-size: 0.98rem;
+  }
+}
+
