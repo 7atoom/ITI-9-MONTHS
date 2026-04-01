@@ -7,11 +7,15 @@ import ItemsList from "../components/ItemsList";
 function Home(props) {
   const {
     categories,
-    cartItems,
+    items,
     handleToggleAddToCart,
     handleSelectCategoryId,
     selectedCategory,
     itmesPerPage,
+    itemsError,
+    categoriesError,
+    itemsLoading,
+    categoriesLoading,
   } = props;
 
   const [selectedPage, setSelectedPage] = useState(0);
@@ -20,13 +24,13 @@ function Home(props) {
 
   const endOffset = itemsOffset + itmesPerPage;
   console.log(`Loading items from ${itemsOffset} to ${endOffset}`);
-  const currentItems = cartItems.slice(itemsOffset, endOffset);
+  const currentItems = items.slice(itemsOffset, endOffset);
   console.log(currentItems);
-  const pageCount = Math.ceil(cartItems.length / itmesPerPage);
+  const pageCount = Math.ceil(items.length / itmesPerPage);
 
   const handleSelectPage = (id) => {
     setSelectedPage(id);
-    const newOffset = (id * itmesPerPage) % cartItems.length;
+    const newOffset = (id * itmesPerPage) % items.length;
     setItemsOffset(newOffset);
   };
 
@@ -34,10 +38,18 @@ function Home(props) {
     <div className="max-w-3xl mx-auto px-4 py-8">
       <Filter
         categories={categories}
-        handleSelectCategoryId={handleSelectCategoryId}
+        handleSelectCategoryId={(id) => {
+          if (id !== 0) {
+            setSelectedPage(0);
+            setItemsOffset(0);
+          }
+          handleSelectCategoryId(id);
+        }}
         selectedCategory={selectedCategory}
+        categoriesError={categoriesError}
+        categoriesLoading={categoriesLoading}
       />
-      <ItemsList currentItems={currentItems} handleToggleAddToCart={handleToggleAddToCart} />
+      <ItemsList currentItems={currentItems} handleToggleAddToCart={handleToggleAddToCart} itemsError={itemsError} itemsLoading={itemsLoading} />
       <PaginatedPages
         selectedPage={selectedPage}
         handleSelectPage={handleSelectPage}

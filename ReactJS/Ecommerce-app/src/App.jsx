@@ -2,147 +2,69 @@ import { Route, Routes } from "react-router";
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
 import NavBar from "./components/NavBar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Admin from "./pages/Admin";
+import axios from "axios";
+import Form from "./components/ProductForm";
 
 function App() {
-  const [items, setItems] = useState([
-    {
-      id: 1,
-      name: "small burger",
-      count: 2,
-      price: 50,
-      categoryId: 1,
-      isInCart: true,
-    },
-    {
-      id: 2,
-      name: "medium burger",
-      count: 1,
-      price: 70,
-      categoryId: 1,
-      isInCart: true,
-    },
-    {
-      id: 3,
-      name: "large burger",
-      count: 0,
-      price: 90,
-      categoryId: 1,
-      isInCart: false,
-    },
-
-    {
-      id: 4,
-      name: "small pizza",
-      count: 1,
-      price: 80,
-      categoryId: 2,
-      isInCart: true,
-    },
-    {
-      id: 5,
-      name: "medium pizza",
-      count: 0,
-      price: 120,
-      categoryId: 2,
-      isInCart: false,
-    },
-    {
-      id: 6,
-      name: "large pizza",
-      count: 0,
-      price: 150,
-      categoryId: 2,
-      isInCart: false,
-    },
-
-    {
-      id: 7,
-      name: "small fries",
-      count: 3,
-      price: 25,
-      categoryId: 3,
-      isInCart: true,
-    },
-    {
-      id: 8,
-      name: "medium fries",
-      count: 1,
-      price: 35,
-      categoryId: 3,
-      isInCart: true,
-    },
-    {
-      id: 9,
-      name: "large fries",
-      count: 0,
-      price: 45,
-      categoryId: 3,
-      isInCart: false,
-    },
-
-    {
-      id: 10,
-      name: "small cola",
-      count: 2,
-      price: 15,
-      categoryId: 4,
-      isInCart: true,
-    },
-    {
-      id: 11,
-      name: "large cola",
-      count: 1,
-      price: 25,
-      categoryId: 4,
-      isInCart: true,
-    },
-    {
-      id: 12,
-      name: "water bottle",
-      count: 5,
-      price: 10,
-      categoryId: 4,
-      isInCart: true,
-    },
-
-    {
-      id: 13,
-      name: "small ice cream",
-      count: 1,
-      price: 30,
-      categoryId: 5,
-      isInCart: true,
-    },
-    {
-      id: 14,
-      name: "large ice cream",
-      count: 0,
-      price: 50,
-      categoryId: 5,
-      isInCart: false,
-    },
-    {
-      id: 15,
-      name: "cake slice",
-      count: 2,
-      price: 45,
-      categoryId: 5,
-      isInCart: true,
-    },
-  ]);
-
-  const categories = [
-    { id: 1, name: "Burger" },
-    { id: 2, name: "Pizza" },
-    { id: 3, name: "Fries" },
-    { id: 4, name: "Drinks" },
-    { id: 5, name: "Desserts" },
-  ];
-
+  // ------ States ------ //
+  const [items, setItems] = useState([]);
+  const [itemsError, setItemsError] = useState(null);
+  const [itemsLoading, setItemsLoading] = useState(true);
+  const [categories, setCategories] = useState([]);
+  const [categoriesError, setCategoriesError] = useState(null);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(0);
 
+  // ------ Effects ------ //
+  useEffect(() => {
+    const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+    const fetchItems = async () => {
+      const controller = new AbortController();
+
+      setItemsError(null);
+      setItemsLoading(true);
+      try {
+        await delay(2000);
+        const { data } = await axios.get("http://localhost:3000/items", {
+          signal: controller.signal,
+        });
+        setItems(data);
+      } catch (error) {
+        console.error("Error fetching items:", error);
+        setItemsError(error.message);
+      } finally {
+        setItemsLoading(false);
+      }
+    };
+
+    const fetchCategories = async () => {
+      const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+      const controller = new AbortController();
+      setCategoriesError(null);
+      setCategoriesLoading(true);
+      try {
+        await delay(2000);
+
+        const { data } = await axios.get("http://localhost:3000/categories", {
+          signal: controller.signal,
+        });
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        setCategoriesError(error.message);
+      } finally {
+        setCategoriesLoading(false);
+      }
+    };
+
+    fetchItems();
+    fetchCategories();
+  }, []);
+
+  // ----- Handlers ------ //
   const handleIncrement = (id) => {
     // clone & edit
     const newItems = items.map((item) =>
@@ -189,16 +111,25 @@ function App() {
   };
 
   const filteredItems = selectedCategory
-    ? items.filter((item) => item.categoryId === selectedCategory)
+    ? items.filter((item) => +item.categoryId === +selectedCategory)
     : items;
 
   const noCartItems = items.filter((item) => item.isInCart).length;
-  console.log(noCartItems);
-  console.log(filteredItems);
 
   const handledCartItems = items.filter(
     (item) => item.isInCart && item.count > 0
   );
+
+  const handleAddItem = (newItem) => {
+    setItems((prevItems) => [...prevItems, newItem]);
+  };
+
+  const handleEditItem = (editedItem) => {
+    const newItems = items.map((item) =>
+      item.id === editedItem.id ? editedItem : item
+    );
+    setItems(newItems);
+  };
 
   return (
     <>
@@ -209,16 +140,31 @@ function App() {
             index
             element={
               <Home
-                cartItems={filteredItems}
+                items={filteredItems}
                 handleToggleAddToCart={handleToggleAddToCart}
                 categories={categories}
                 handleSelectCategoryId={handleSelectCategoryId}
                 selectedCategory={selectedCategory}
                 itmesPerPage={4}
+                itemsError={itemsError}
+                itemsLoading={itemsLoading}
+                categoriesError={categoriesError}
+                categoriesLoading={categoriesLoading}
               />
             }
           />
-          <Route path="/admin" element={<Admin />} />
+          <Route
+            path="/admin"
+            element={
+              <Admin
+                items={items}
+                itemsError={itemsError}
+                itemsLoading={itemsLoading}
+              />
+            }
+          />
+          <Route path="/admin/new" element={<Form />} />
+          <Route path="/admin/:id" element={<Form />} />
           <Route
             path="/cart"
             element={
@@ -228,6 +174,8 @@ function App() {
                 handleDecrement={handleDecrement}
                 handleDelete={handleDelete}
                 resetCartItems={resetCartItems}
+                itemsError={itemsError}
+                itemsLoading={itemsLoading}
               />
             }
           />

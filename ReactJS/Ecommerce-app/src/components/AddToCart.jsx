@@ -10,7 +10,7 @@ function AddToCart(props) {
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="size-6 cursor-pointer text-gray-500 hover:text-blue-500 transition-colors"
+        className="size-6 mx-auto cursor-pointer text-gray-500 hover:text-blue-500 transition-colors"
         onClick={() => handleToggleAddToCart(item.id)}
       >
         <path
