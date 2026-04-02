@@ -49,7 +49,14 @@ function Home(props) {
         categoriesError={categoriesError}
         categoriesLoading={categoriesLoading}
       />
-      <ItemsList currentItems={currentItems} handleToggleAddToCart={handleToggleAddToCart} itemsError={itemsError} itemsLoading={itemsLoading} />
+      <ItemsList
+        currentItems={currentItems}
+        handleToggleAddToCart={handleToggleAddToCart}
+        itemsError={itemsError}
+        itemsLoading={itemsLoading}
+        categories={categories}
+        categoriesLoading={categoriesLoading}
+      />
       <PaginatedPages
         selectedPage={selectedPage}
         handleSelectPage={handleSelectPage}

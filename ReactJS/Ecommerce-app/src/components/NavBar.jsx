@@ -1,24 +1,25 @@
-import {Link, NavLink} from "react-router";
+import { Link, NavLink } from "react-router";
 
 function NavBar(props) {
-  const {noCartItems} = props;
+  const { noCartItems } = props;
   return (
     <div>
       <div className="navbar bg-base-100 shadow-sm">
         <div className="flex-1">
-          <Link to={"/"} className="btn btn-ghost text-xl">Hatoom</Link>
+          <Link to={"/"} className="btn btn-ghost text-xl">
+            Hatoom
+          </Link>
         </div>
         <div className="flex-none">
           <ul className="menu menu-horizontal px-1">
-            <li>
-              <NavLink to={"/"}>Home</NavLink>
-            </li>
             <li>
               <NavLink to={"/admin"}>Admin</NavLink>
             </li>
             <li>
               <NavLink className={"relative"} to={"/cart"}>
-                <span className="glyphicon glyphicon-chevron-left absolute top-0 right-0 bg-accent rounded-full text-s">{noCartItems}</span>
+                <span className="glyphicon glyphicon-chevron-left absolute top-0 right-0 bg-accent rounded-full text-s">
+                  {noCartItems}
+                </span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

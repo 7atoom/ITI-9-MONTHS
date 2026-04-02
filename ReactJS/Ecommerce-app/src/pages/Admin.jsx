@@ -2,9 +2,17 @@ import { useState } from "react";
 import ItemsList from "../components/ItemsList";
 import PaginatedPages from "../components/PaginatedItems";
 
-function Admin({ items, itemsError, itemsLoading }) {
+function Admin({
+  items,
+  itemsError,
+  itemsLoading,
+  categories,
+  categoriesLoading,
+  handleEditItem,
+  handleDeleteItem,
+}) {
   const [selectedPage, setSelectedPage] = useState(0);
-    const [itemsOffset, setItemsOffset] = useState(0);
+  const [itemsOffset, setItemsOffset] = useState(0);
 
   const endOffset = itemsOffset + 5;
   const currentItems = items.slice(itemsOffset, endOffset);
@@ -24,6 +32,10 @@ function Admin({ items, itemsError, itemsLoading }) {
         itemsLoading={itemsLoading}
         handleToggleAddToCart={() => {}}
         isAdmin={true}
+        categories={categories}
+        categoriesLoading={categoriesLoading}
+        handleEditItem={handleEditItem}
+        handleDeleteItem={handleDeleteItem}
       />
       <PaginatedPages
         pageCount={pageCount}

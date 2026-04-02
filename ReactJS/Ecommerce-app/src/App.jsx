@@ -5,7 +5,8 @@ import NavBar from "./components/NavBar";
 import { useEffect, useState } from "react";
 import Admin from "./pages/Admin";
 import axios from "axios";
-import Form from "./components/ProductForm";
+import ProductForm from "./components/ProductForm";
+import { ToastContainer, toast } from "react-toastify";
 
 function App() {
   // ------ States ------ //
@@ -120,20 +121,48 @@ function App() {
     (item) => item.isInCart && item.count > 0
   );
 
-  const handleAddItem = (newItem) => {
-    setItems((prevItems) => [...prevItems, newItem]);
+  const handleAddItem = async (newItem) => {
+    try {
+      const { data } = await axios.post("http://localhost:3000/items", newItem);
+      console.log(data);
+      setItems((prevItems) => [...prevItems, newItem]);
+      toast.success("The item has added successfully");
+    } catch (error) {
+      console.error("Error adding item:", error);
+    }
   };
 
-  const handleEditItem = (editedItem) => {
-    const newItems = items.map((item) =>
-      item.id === editedItem.id ? editedItem : item
-    );
-    setItems(newItems);
+  const handleEditItem = async (editedItem) => {
+    try {
+      const { data } = await axios.put(
+        `http://localhost:3000/items/${editedItem.id}`,
+        editedItem
+      );
+      console.log(data);
+      setItems((prevItems) =>
+        prevItems.map((item) => (item.id === editedItem.id ? editedItem : item))
+      );
+      toast.success("The item has edited successfully");
+    } catch (error) {
+      console.error("Error editing item:", error);
+    }
+  };
+
+  const handleDeleteItem = async (id) => {
+    try {
+      const { data } = await axios.delete(`http://localhost:3000/items/${id}`);
+      const newItems = items.filter((item) => item.id !== data.id);
+      setItems(newItems);
+      toast.success("The item has deleted successfully");
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
   };
 
   return (
     <>
       <div>
+        <ToastContainer />
         <NavBar noCartItems={noCartItems} />
         <Routes>
           <Route
@@ -145,7 +174,7 @@ function App() {
                 categories={categories}
                 handleSelectCategoryId={handleSelectCategoryId}
                 selectedCategory={selectedCategory}
-                itmesPerPage={4}
+                itmesPerPage={6}
                 itemsError={itemsError}
                 itemsLoading={itemsLoading}
                 categoriesError={categoriesError}
@@ -160,11 +189,21 @@ function App() {
                 items={items}
                 itemsError={itemsError}
                 itemsLoading={itemsLoading}
+                categories={categories}
+                categoriesLoading={categoriesLoading}
+                handleEditItem={handleEditItem}
+                handleDeleteItem={handleDeleteItem}
               />
             }
           />
-          <Route path="/admin/new" element={<Form />} />
-          <Route path="/admin/:id" element={<Form />} />
+          <Route
+            path="/admin/new"
+            element={<ProductForm handleAddItem={handleAddItem} />}
+          />
+          <Route
+            path="/admin/:id"
+            element={<ProductForm handleEditItem={handleEditItem} />}
+          />
           <Route
             path="/cart"
             element={

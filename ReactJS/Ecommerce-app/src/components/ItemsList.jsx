@@ -8,18 +8,28 @@ function ItemsList({
   itemsError,
   itemsLoading,
   isAdmin,
+  categories = [],
+  categoriesLoading,
+  handleDeleteItem,
 }) {
+  const categoryNames = categories.reduce((acc, cat) => {
+    acc[cat.id] = cat.name;
+    return acc;
+  }, {});
   const navigate = useNavigate();
-  const handleEditItem = (id) => {
+  const handleNavigateToEdit = (id) => {
     navigate(`/admin/${id}`);
   };
+
   return (
     <>
       <table className="w-full mt-6 border border-gray-200 rounded-lg overflow-hidden">
+        {/* Table Header */}
         <thead className="bg-gray-100 text-gray-600 text-sm uppercase">
           <tr>
             <th className="text-center px-6 py-3">Name</th>
             <th className="text-center px-6 py-3">Price</th>
+            <th className="text-center px-6 py-3">Category</th>
             {isAdmin ? (
               <th className="text-center px-6 py-3">Edit Items</th>
             ) : null}
@@ -29,6 +39,7 @@ function ItemsList({
             {!isAdmin && <th className="text-center px-6 py-3">Add to Cart</th>}
           </tr>
         </thead>
+        {/* Table Body */}
         <tbody className="divide-y divide-gray-100 text-center">
           {itemsError && (
             <tr className="text-center">
@@ -40,6 +51,7 @@ function ItemsList({
               </td>
             </tr>
           )}
+          {/* Loading State */}
           {itemsLoading && (
             <tr>
               <td colSpan="3" className="text-center py-4">
@@ -47,17 +59,32 @@ function ItemsList({
               </td>
             </tr>
           )}
+          {/* Item Rows */}
           {currentItems.map((item) => (
             <tr
               key={item.id}
               className="hover:bg-gray-50 text-center transition-colors"
             >
+              {/* Item Name */}
               <td className="px-6 py-4 font-medium text-gray-800">
                 {item.name}
               </td>
+              {/* Item Price */}
               <td className="px-6 py-4 text-gray-600">${item.price}</td>
+              {/* Item Category */}
+              <td className="px-6 py-4 text-gray-600">
+                {categoriesLoading ? (
+                  <span className="inline-block w-20 h-4 bg-gray-200 rounded animate-pulse" />
+                ) : (
+                  categoryNames[+item.categoryId] || "Unknown"
+                )}
+              </td>
+              {/* Edit Item */}
               {isAdmin ? (
-                <td className="px-6 py-4 text-blue-500 cursor-pointer" onClick={() => handleEditItem(item.id)}>
+                <td
+                  className="px-6 py-4 text-blue-500 cursor-pointer"
+                  onClick={() => handleNavigateToEdit(item.id)}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -74,8 +101,12 @@ function ItemsList({
                   </svg>
                 </td>
               ) : null}
+              {/* Delete Item */}
               {isAdmin ? (
-                <td className="px-6 py-4 text-red-500 cursor-pointer">
+                <td
+                  className="px-6 py-4 text-red-500 cursor-pointer"
+                  onClick={() => handleDeleteItem(item.id)}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -92,6 +123,7 @@ function ItemsList({
                   </svg>
                 </td>
               ) : null}
+              {/* Add to Cart */}
               {!isAdmin && (
                 <td className="px-6 py-4">
                   <AddToCart
