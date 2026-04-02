@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import AddToCart from "./AddToCart";
 import FloatingButton from "./FloatingButton";
+import { memo, useMemo } from "react";
 
 function ItemsList({
   currentItems,
@@ -12,14 +13,25 @@ function ItemsList({
   categoriesLoading,
   handleDeleteItem,
 }) {
-  const categoryNames = categories.reduce((acc, cat) => {
-    acc[cat.id] = cat.name;
-    return acc;
-  }, {});
+  const categoryNames = useMemo(() => {
+    return categories.reduce((acc, cat) => {
+      acc[cat.id] = cat.name;
+      return acc;
+    }, {});
+  }, [categories]);
+
   const navigate = useNavigate();
   const handleNavigateToEdit = (id) => {
     navigate(`/admin/${id}`);
   };
+
+  if (currentItems.length === 0 && !itemsLoading && !itemsError) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-gray-600 text-lg">No items found.</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -141,4 +153,4 @@ function ItemsList({
   );
 }
 
-export default ItemsList;
+export default memo(ItemsList);

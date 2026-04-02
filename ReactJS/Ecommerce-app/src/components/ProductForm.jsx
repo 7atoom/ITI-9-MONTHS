@@ -3,8 +3,9 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import InputField from "./InputField";
 import { useNavigate, useParams } from "react-router";
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const ProductSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
@@ -12,9 +13,9 @@ const ProductSchema = z.object({
   categoryId: z.coerce.number().positive("Category is required"),
 });
 
-function ProductForm({ handleAddItem, handleEditItem }) {
+function ProductForm({ handleAddItem, handleEditItem, categories = [] }) {
   const navigate = useNavigate();
-  const {
+    const {
     register,
     handleSubmit,
     reset,
@@ -50,6 +51,7 @@ function ProductForm({ handleAddItem, handleEditItem }) {
           });
         });
       } catch (error) {
+        toast.error("Error fetching item data");
         console.error("Error fetching item:", error);
       }
     }
@@ -57,7 +59,7 @@ function ProductForm({ handleAddItem, handleEditItem }) {
 
   return (
     <>
-      <div>
+      <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
         <form className="m-4" onSubmit={handleSubmit(handleSubmitForm)}>
           <InputField
             title="Name"
@@ -73,13 +75,27 @@ function ProductForm({ handleAddItem, handleEditItem }) {
             register={register}
             errors={errors}
           />
-          <InputField
-            title="Category ID"
-            name="categoryId"
-            placeholder="Enter category ID"
-            register={register}
-            errors={errors}
-          />
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Category
+            </label>
+            <select
+              {...register("categoryId")}
+              className="shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
+            >
+              <option value="">Select a category</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+            {errors.categoryId && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.categoryId.message}
+              </p>
+            )}
+          </div>
           <button
             type="submit"
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline cursor-pointer"
@@ -92,4 +108,4 @@ function ProductForm({ handleAddItem, handleEditItem }) {
   );
 }
 
-export default ProductForm;
+export default memo(ProductForm);

@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import ItemsList from "../components/ItemsList";
 import PaginatedPages from "../components/PaginatedItems";
+import Filter from "../components/Filter";
 
 function Admin({
   items,
@@ -10,6 +11,9 @@ function Admin({
   categoriesLoading,
   handleEditItem,
   handleDeleteItem,
+  handleSelectCategoryId,
+  selectedCategory,
+  categoriesError,
 }) {
   const [selectedPage, setSelectedPage] = useState(0);
   const [itemsOffset, setItemsOffset] = useState(0);
@@ -18,19 +22,28 @@ function Admin({
   const currentItems = items.slice(itemsOffset, endOffset);
   const pageCount = Math.ceil(items.length / 5);
 
-  const handleSelectPage = (id) => {
-    setSelectedPage(id);
-    const newOffset = (id * 5) % items.length;
-    setItemsOffset(newOffset);
-  };
+  const handleSelectPage = useCallback(
+    (id) => {
+      setSelectedPage(id);
+      const newOffset = (id * 5) % items.length;
+      setItemsOffset(newOffset);
+    },
+    [items.length]
+  );
 
   return (
-    <div>
+    <div className="max-w-3xl mx-auto px-4 py-8">
+      <Filter
+        categories={categories}
+        handleSelectCategoryId={handleSelectCategoryId}
+        selectedCategory={selectedCategory}
+        categoriesError={categoriesError}
+        categoriesLoading={categoriesLoading}
+      />
       <ItemsList
         currentItems={currentItems}
         itemsError={itemsError}
         itemsLoading={itemsLoading}
-        handleToggleAddToCart={() => {}}
         isAdmin={true}
         categories={categories}
         categoriesLoading={categoriesLoading}

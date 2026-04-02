@@ -34,6 +34,7 @@ function App() {
         setItems(data);
       } catch (error) {
         console.error("Error fetching items:", error);
+        toast.error("Error fetching items");
         setItemsError(error.message);
       } finally {
         setItemsLoading(false);
@@ -56,6 +57,7 @@ function App() {
       } catch (error) {
         console.error("Error fetching categories:", error);
         setCategoriesError(error.message);
+        toast.error("Error fetching categories");
       } finally {
         setCategoriesLoading(false);
       }
@@ -125,10 +127,11 @@ function App() {
     try {
       const { data } = await axios.post("http://localhost:3000/items", newItem);
       console.log(data);
-      setItems((prevItems) => [...prevItems, newItem]);
+      setItems((prevItems) => [...prevItems, data]);
       toast.success("The item has added successfully");
     } catch (error) {
       console.error("Error adding item:", error);
+      toast.error("Error adding item");
     }
   };
 
@@ -140,10 +143,11 @@ function App() {
       );
       console.log(data);
       setItems((prevItems) =>
-        prevItems.map((item) => (item.id === editedItem.id ? editedItem : item))
+        prevItems.map((item) => (item.id === data.id ? data : item))
       );
       toast.success("The item has edited successfully");
     } catch (error) {
+      toast.error("Error editing item");
       console.error("Error editing item:", error);
     }
   };
@@ -155,6 +159,7 @@ function App() {
       setItems(newItems);
       toast.success("The item has deleted successfully");
     } catch (error) {
+      toast.error("Error deleting item");
       console.error("Error deleting item:", error);
     }
   };
@@ -186,23 +191,26 @@ function App() {
             path="/admin"
             element={
               <Admin
-                items={items}
+                items={filteredItems}
                 itemsError={itemsError}
                 itemsLoading={itemsLoading}
                 categories={categories}
                 categoriesLoading={categoriesLoading}
                 handleEditItem={handleEditItem}
                 handleDeleteItem={handleDeleteItem}
+                handleSelectCategoryId={handleSelectCategoryId}
+                selectedCategory={selectedCategory}
+                categoriesError={categoriesError}
               />
             }
           />
           <Route
             path="/admin/new"
-            element={<ProductForm handleAddItem={handleAddItem} />}
+            element={<ProductForm handleAddItem={handleAddItem} categories={categories} />}
           />
           <Route
             path="/admin/:id"
-            element={<ProductForm handleEditItem={handleEditItem} />}
+            element={<ProductForm handleEditItem={handleEditItem} categories={categories} />}
           />
           <Route
             path="/cart"

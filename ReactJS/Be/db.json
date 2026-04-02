@@ -1,12 +1,10 @@
 {
   "items": [
     {
-      "id": "10",
       "name": "small cola",
-      "count": 2,
-      "price": 15,
+      "price": 120,
       "categoryId": 4,
-      "isInCart": true
+      "id": "10"
     },
     {
       "id": "11",
@@ -41,14 +39,6 @@
       "isInCart": false
     },
     {
-      "id": "15",
-      "name": "cake slice",
-      "count": 2,
-      "price": 45,
-      "categoryId": 5,
-      "isInCart": true
-    },
-    {
       "name": "Pizza firehouse",
       "price": 111,
       "categoryId": 2,
@@ -59,6 +49,18 @@
       "price": 20,
       "categoryId": 4,
       "id": "hrbWDQtx04Q"
+    },
+    {
+      "name": "Large burger",
+      "price": 250,
+      "categoryId": 1,
+      "id": "5vpcQfdg6fc"
+    },
+    {
+      "name": "French fries",
+      "price": 30,
+      "categoryId": 3,
+      "id": "JreX7Y9RsoY"
     }
   ],
   "categories": [
