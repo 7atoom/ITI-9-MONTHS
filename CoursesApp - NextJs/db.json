@@ -1,0 +1,64 @@
+{
+  "courses": [
+    {
+      "id": 1,
+      "title": "React for Beginners",
+      "description": "Build interactive user interfaces with modern React fundamentals.",
+      "instructor": "Ahmed Samir",
+      "durationHours": 12,
+      "level": "Beginner",
+      "price": 49.99,
+      "rating": 4.6,
+      "image": "/courses/react-beginners.jpg",
+      "tags": ["React", "JavaScript", "Frontend"]
+    },
+    {
+      "id": 2,
+      "title": "Next.js Mastery",
+      "description": "Learn routing, data fetching, and performance patterns in Next.js.",
+      "instructor": "Mona Hany",
+      "durationHours": 16,
+      "level": "Intermediate",
+      "price": 79.99,
+      "rating": 4.8,
+      "image": "/courses/react-beginners.jpg",
+      "tags": ["Next.js", "React", "SSR"]
+    },
+    {
+      "id": 3,
+      "title": "TypeScript in Practice",
+      "description": "Use TypeScript to write scalable and safer frontend applications.",
+      "instructor": "Youssef Ali",
+      "durationHours": 10,
+      "level": "Beginner",
+      "price": 39.99,
+      "rating": 4.5,
+      "image": "/courses/react-beginners.jpg",
+      "tags": ["TypeScript", "Tooling", "Best Practices"]
+    },
+    {
+      "id": 4,
+      "title": "Advanced State Management",
+      "description": "Master complex state patterns with Redux Toolkit and Zustand.",
+      "instructor": "Sara Mostafa",
+      "durationHours": 14,
+      "level": "Advanced",
+      "price": 89.99,
+      "rating": 4.7,
+      "image": "/courses/react-beginners.jpg",
+      "tags": ["Redux", "Zustand", "Architecture"]
+    },
+    {
+      "id": 5,
+      "title": "Testing React Apps",
+      "description": "Write reliable unit and integration tests using Jest and RTL.",
+      "instructor": "Omar Khaled",
+      "durationHours": 11,
+      "level": "Intermediate",
+      "price": 59.99,
+      "rating": 4.4,
+      "image": "/courses/react-beginners.jpg",
+      "tags": ["Testing", "Jest", "React Testing Library"]
+    }
+  ]
+}
